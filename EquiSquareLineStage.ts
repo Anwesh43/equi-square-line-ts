@@ -41,11 +41,17 @@ class DrawingUtil {
         context.translate(x, 0)
         context.beginPath()
         context.moveTo(0, 0)
-        context.lineTo(0, -size * sc)
+        context.lineTo(0, -size * (1 - sc))
         context.stroke()
         context.restore()
     }
 
+    static drawLine(context : CanvasRenderingContext2D, x1 : number, y1 : number, x2 : number, y2 : number) {
+        context.beginPath()
+        context.moveTo(x1, y1)
+        context.lineTo(x2, y2)
+        context.stroke()
+    }
     static drawESLNode(context : CanvasRenderingContext2D, i : number, scale : number) {
         const gap : number = w / (nodes + 1)
         const size : number = gap / sizeFactor
@@ -61,10 +67,13 @@ class DrawingUtil {
             const scj : number = ScaleUtil.divideScale(sc1, j, parts)
             context.save()
             context.scale(1, 1 - 2 * j)
+            const scs : Array<number> = []
             for (var k = 0; k < lines; k++) {
                 const sck : number = ScaleUtil.divideScale(scj, k, lines)
-                DrawingUtil.drawEquiLine(context, -size + 2 * size * j, size, scj)
+                DrawingUtil.drawEquiLine(context, -size + 2 * size * k, size, sck)
+                scs.push(sck)
             }
+            DrawingUtil.drawLine(context, -size, -size * (1 - scs[0]), size, -size * (1 - scs[1]))
             context.restore()
         }
         context.restore()
