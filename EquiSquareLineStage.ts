@@ -195,7 +195,7 @@ class EquiSquareLine {
     root : ESLNode = new ESLNode(0)
     curr : ESLNode = this.root
     dir : number = 1
-    
+
     draw(context : CanvasRenderingContext2D) {
         this.root.draw(context)
     }
@@ -211,5 +211,27 @@ class EquiSquareLine {
 
     startUpdating(cb : Function) {
         this.curr.startUpdating(cb)
+    }
+}
+
+class Renderer {
+
+    esl : EquiSquareLine = new EquiSquareLine()
+    animator : Animator = new Animator()
+
+    render(context : CanvasRenderingContext2D) {
+        this.esl.draw(context)
+    }
+
+    handleTap(cb : Function) {
+        this.esl.startUpdating(() => {
+            this.animator.start(() => {
+                cb()
+                this.esl.update(() => {
+                    this.animator.stop()
+                    cb()
+                })
+            })
+        })
     }
 }
