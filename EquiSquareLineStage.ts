@@ -33,3 +33,39 @@ class ScaleUtil {
         return ScaleUtil.mirrorValue(scale, a, b) * dir * scGap
     }
 }
+
+class DrawingUtil {
+
+    static drawEquiLine(context : CanvasRenderingContext2D, x : number, size : number, sc : number) {
+        context.save()
+        context.translate(x, 0)
+        context.beginPath()
+        context.moveTo(0, 0)
+        context.lineTo(0, -size * sc)
+        context.stroke()
+        context.restore()
+    }
+
+    static drawESLNode(context : CanvasRenderingContext2D, i : number, scale : number) {
+        const gap : number = w / (nodes + 1)
+        const size : number = gap / sizeFactor
+        const sc1 : number = ScaleUtil.divideScale(scale, 0, 2)
+        const sc2 : number = ScaleUtil.divideScale(scale, 1, 2)
+        context.strokeStyle = foreColor
+        context.lineCap = 'round'
+        context.lineWidth = Math.min(w, h) / strokeFactor
+        context.save()
+        context.translate(gap * (i + 1), h / 2)
+        for (var j = 0; j < parts; j++) {
+            const scj : number = ScaleUtil.divideScale(sc1, j, parts)
+            context.save()
+            context.scale(1, 1 - 2 * j)
+            for (var k = 0; k < lines; k++) {
+                const sck : number = ScaleUtil.divideScale(scj, k, lines)
+                DrawingUtil.drawEquiLine(context, -size + 2 * size * j, size, scj)
+            }
+            context.restore()
+        }
+        context.restore()
+    }
+}
